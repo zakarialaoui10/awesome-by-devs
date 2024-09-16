@@ -1,0 +1,46 @@
+{
+  "name": "ziko-cm",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "cross-env NODE_ENV=development rollup --config rollup.config.js",
+    "watch": "cross-env NODE_ENV=development rollup --config rollup.config.js -w",
+    "build": "cross-env NODE_ENV=production rollup --config rollup.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zakarialaoui10/ziko-cm.git"
+  },
+  "keywords": [
+    "ziko",
+    "codemirror",
+    "jupyter"
+  ],
+  "exports": {
+    "./vue": {
+      "import": "./src/integrations/vue/index.js"
+    }
+  },
+  "author": "zakaria elalaloui",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zakarialaoui10/ziko-cm/issues"
+  },
+  "homepage": "https://github.com/zakarialaoui10/ziko-cm#readme",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^26.0.1",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "cross-env": "^7.0.3"
+  },
+  "dependencies": {
+    "@codemirror/commands": "^6.6.1",
+    "@codemirror/lang-javascript": "^6.2.2",
+    "@codemirror/view": "^6.33.0",
+    "codemirror": "^6.0.1",
+    "ziko": "^0.0.13"
+  }
+}
