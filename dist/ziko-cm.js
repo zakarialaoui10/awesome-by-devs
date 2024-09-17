@@ -2,7 +2,7 @@
 /*
   Project: ziko-cm
   Author: Zakaria Elalaoui
-  Date : Mon Sep 16 2024 15:42:48 GMT+0100 (UTC+01:00)
+  Date : Tue Sep 17 2024 13:32:12 GMT+0100 (UTC+01:00)
   Git-Repo : https://github.com/zakarialaoui10/ziko-cm
   Git-Wiki : https://github.com/zakarialaoui10/ziko.cm/wiki
   Released under MIT License
@@ -27120,6 +27120,7 @@
        constructor(){
            super("code", "CodeInput");
            this.editor = new EditorView({
+               doc:'Flex(\n  p("1"),\n  p("2")\n)',
                extensions: [
                    basicSetup, 
                    javascript(),
@@ -27188,6 +27189,21 @@
                hide:()=>GUTTERS_CONTAINER.style.display = "none",
            }
        }
+       setCode(code=null){
+           if(code!==null){
+               // this.cache.nodes.content.innerText=code;
+               Object.assign(this.cache.nodes.content,{
+                   textContent : code
+               });
+           }
+           return this
+       }
+       clear(){
+           Object.assign(this.cache.nodes.content,{
+               textContent : ""
+           });
+           return this;
+       }
    }
 
    const CodeInput = () => new ZikoCMCodeInput();
@@ -27230,40 +27246,38 @@
            });
            return this;
        }
-       #evaluateJs(code, order){
+       #evaluateJs(code){
            try{
-               // this.LeftControl[0].setValue("pending");
+               this.emit("run:pending");
                this.cache.state="pending";  
-               // globalThis.eval(this.Input.element.innerText);
                globalThis?.eval(code);
-
            }
            catch(err){
                console.log(err);
-               ziko.text(`Error : ${err.message}`).style({
-                   color:"red",
-                   background:"gold",
-                   border:"2px red solid",
-                   padding:"10px",
-                   margin:"10px 0",
-                   display:"flex",
-                   justifyContent: "center",
+               this.emit("run:error",{
+                   error : err
                });
-               // this.LeftControl[0].setValue("Err");
-               this.cache.state="Error";            
+               this.cache.state="error";            
            }
            finally{
                if(this.cache.state==="pending"){
                    this.cache.state="success";
-                   // this.setOrder(order);
-                   // if(this.cache.parent instanceof ZikoUICodeNote){
-                   //     this.cache.parent.incrementOrder();
-                   //     this.cache.parent.next();
-                   // }
+                   this.emit("run:success");
                }
            }
        }
-
+       onPending(callback){
+           this.on("run:pending",callback);
+           return this;
+       }
+       onError(callback){
+           this.on("run:error",callback);
+           return this;
+       }
+       onSuccess(callback){
+           this.on("run:success",callback);
+           return this;
+       }
    }
 
 
@@ -27274,8 +27288,13 @@
            super("section", "CodeCell");
            this.input = CodeInput().size("100%");
            this.output = CodeOutput().size("100%");
-           this.input.attach(this.output)
-                     .onKeyDown(e=>useSuccesifKeys(e,["Shift","Enter"],()=>e.target.run()));
+           this.input.attach(this.output);
+           this.input.onKeyDown(e=>{
+               if(e.event.shiftKey && e.kd === "Enter"){
+                   e.event.preventDefault();
+                   e.target.run();
+               }
+           });
            this.cell = ziko.Flex(
                this.input,
                this.output
@@ -27284,13 +27303,22 @@
                margin : "10px",
                padding: "0 30px"
            });
+           this.element.append(this.cell.element);
+       }
+       get codeContent(){
+           return this.input.codeContent;
+       }
+       setCode(code){
+           this.input.setCode(code);
+           return this;
        }
        run(){
            this.input.run();
            return this;
        }
        clearInput(){
-           // Not Yet
+           this.input.clear();
+           return this;
        }
        clearOutput(){
            this.output.clear();
@@ -27302,35 +27330,153 @@
            return this;
        }
    }
-   // class ZikoCMFlexedCodeCell extends Flex.constructor {
-   //     constructor(){
-   //         super("section","CodeCell");
-   //         this.input = CodeInput();
-   //         this.output = CodeOutput();
-   //         mixin(this.__proto__, __ZikoCMCellBuilder__);   
-   //         this.init()  
-   //     }
-   // }
-   // class ZikoCMHorizontallySplittedCodeCell extends ZikoUIHorizontalSplitter {
-   //     constructor(){
-   //         super("section","CodeCell");
-   //         this.input = CodeInput();
-   //         this.output = CodeOutput();
-   //         mixin(this.__proto__, __ZikoCMCellBuilder__);     
-   //         this.init()
-   //     }
-   // }
 
    const CodeCell = () => new ZikoCMCodeCell();
-   const hSplittedCodeCell = () => new ZikoCMCodeCell();
-   const vSplittedCodeCell = () => new ZikoCMCodeCell();
+
+   class ZikoCMNote extends ziko.ZikoUIElement{
+       constructor(){
+           super("section", "");
+           this.order = text("78768").style({
+               borderBottom : "4px solid gold",
+               color : "gold",
+               padding : "5px"
+           });
+           const left = Flex(
+               this.order
+           ).style({
+               background : "darkblue",
+               width : "80px",
+               height: "60px"
+           }).vertical(0,0);
+           this.cell = CodeCell().size("100%").style({border:"1px red solid"});
+           this.note = Flex(
+               left,
+               this.cell
+           ).horizontal("space-between",0);
+           this.element.append(this.note.element);
+       }
+       setOrder(value){
+           this.order.setValue(value);
+           return this
+       }
+       focus(){
+           this.element.querySelector("[contenteditable='true']").focus();
+           return this;
+       }
+       blur(){
+           this.element.querySelector("[contenteditable='true']").blur();
+           return this;
+       }
+       activate(){
+           this.cell.input.style({
+               outline : "2px green solid"
+           });
+       }
+       desactivate(){
+           this.cell.input.style({
+               outline : "none"
+           });
+       }
+   }
+
+   const Note = () => new ZikoCMNote();
+
+   class ZikoCMCodeNote extends ziko.ZikoUIElement {
+       constructor(){
+           super("section","CodeNote");
+           this.container = ziko.Flex().vertical(0, 0).style({
+
+           });
+           Object.assign(this.cache,{
+               activeNote:null,
+               order : -1,
+               nextCellAfterERunning:"next",
+               runNextCell : false
+           });
+           this.element.append(this.container.element);
+           this.notes = [];
+       }
+       get isCodeNote(){
+           return true;
+       }
+       get activeNote(){
+           return this.cache.activeNote;
+       }
+       get currentIndex(){
+           return this.notes.findIndex(n=>n===this.activeNote);
+       }
+       addNote(){
+           let NewNote = Note().size("100%").setOrder("___");
+           NewNote.cell.output.onSuccess(()=>{
+               NewNote.setOrder(++this.cache.order);
+               if(this.cache.nextCellAfterERunning==="next")this.next(this.cache.runNextCell);
+               else if(this.cache.nextCellAfterERunning==="previous")this.previous(this.cache.runNextCell);
+           });
+           NewNote.element.querySelector("[contenteditable='true']").addEventListener("focus",()=>{
+               this.cache.activeNote = NewNote;
+               NewNote.activate();
+           });
+           NewNote.element.querySelector("[contenteditable='true']").addEventListener("blur",()=>{
+               this.cache.activeNote = "null";
+               NewNote.desactivate();
+           });
+           this.onKeyDown(e=>{
+               if(e.event.shiftKey){
+                   if(e.kd === "ArrowDown"){
+                       this.next();
+                   }
+                   else if(e.kd === "ArrowUp"){
+                       this.previous();
+                   }
+               }
+           });
+           this.container.append(NewNote);
+           this.notes.push(NewNote);
+           return this;
+       }
+       next(run = false){
+           const NextCell = this.notes[this.currentIndex+1];
+           if(NextCell){
+               NextCell.focus();
+               if(run)NextCell.cell.run();
+           }
+           return this
+       }
+       previous(run = false){
+           const PreviousCell = this.notes[this.currentIndex-1];
+           console.log(PreviousCell);
+           if(PreviousCell){
+               PreviousCell.focus();
+               if(run)PreviousCell.cell.run();
+           }
+           return this
+       }
+       config(){
+
+       }
+       get inputsData(){
+           return this.notes.map(n=>Object.assign({},{
+               input : n.cell.input.codeContent,
+               order : n.order.text
+           }))
+       }
+       get outputsData(){
+           return this.notes.map(n=>Object.assign({},{
+               html : n.cell.output.element.innerHTML,
+               order : n.order.text
+           }))   
+       }
+   }
+       
+
+   const CodeNote=()=>new ZikoCMCodeNote();
 
    exports.CodeCell = CodeCell;
    exports.CodeInput = CodeInput;
+   exports.CodeNote = CodeNote;
    exports.CodeOutput = CodeOutput;
    exports.ZikoCMCodeInput = ZikoCMCodeInput;
+   exports.ZikoCMCodeNote = ZikoCMCodeNote;
    exports.ZikoCMCodeOutput = ZikoCMCodeOutput;
-   exports.hSplittedCodeCell = hSplittedCodeCell;
-   exports.vSplittedCodeCell = vSplittedCodeCell;
 
 }));

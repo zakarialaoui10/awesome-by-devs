@@ -1,8 +1,6 @@
 import { 
     ZikoUIElement,
     Flex,
-    vSplitter,
-    hSplitter
 } from "ziko";
 import { CodeInput } from "./code-input.js";
 import { CodeOutput } from "./code-output.js";
@@ -12,7 +10,12 @@ class ZikoCMCodeCell extends ZikoUIElement{
         this.input = CodeInput().size("100%");
         this.output = CodeOutput().size("100%");
         this.input.attach(this.output)
-                  .onKeyDown(e=>useSuccesifKeys(e,["Shift","Enter"],()=>e.target.run()));
+        this.input.onKeyDown(e=>{
+            if(e.event.shiftKey && e.kd === "Enter"){
+                e.event.preventDefault()
+                e.target.run()
+            }
+        })
         this.cell = Flex(
             this.input,
             this.output
@@ -21,13 +24,22 @@ class ZikoCMCodeCell extends ZikoUIElement{
             margin : "10px",
             padding: "0 30px"
         })
+        this.element.append(this.cell.element);
+    }
+    get codeContent(){
+        return this.input.codeContent;
+    }
+    setCode(code){
+        this.input.setCode(code);
+        return this;
     }
     run(){
         this.input.run();
         return this;
     }
     clearInput(){
-        // Not Yet
+        this.input.clear();
+        return this;
     }
     clearOutput(){
         this.output.clear();
@@ -39,31 +51,9 @@ class ZikoCMCodeCell extends ZikoUIElement{
         return this;
     }
 }
-// class ZikoCMFlexedCodeCell extends Flex.constructor {
-//     constructor(){
-//         super("section","CodeCell");
-//         this.input = CodeInput();
-//         this.output = CodeOutput();
-//         mixin(this.__proto__, __ZikoCMCellBuilder__);   
-//         this.init()  
-//     }
-// }
-// class ZikoCMHorizontallySplittedCodeCell extends ZikoUIHorizontalSplitter {
-//     constructor(){
-//         super("section","CodeCell");
-//         this.input = CodeInput();
-//         this.output = CodeOutput();
-//         mixin(this.__proto__, __ZikoCMCellBuilder__);     
-//         this.init()
-//     }
-// }
 
 const CodeCell = () => new ZikoCMCodeCell();
-const hSplittedCodeCell = () => new ZikoCMCodeCell();
-const vSplittedCodeCell = () => new ZikoCMCodeCell();
 
 export{
     CodeCell,
-    hSplittedCodeCell,
-    vSplittedCodeCell
 }

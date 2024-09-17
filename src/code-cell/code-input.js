@@ -7,6 +7,7 @@ class ZikoCMCodeInput extends ZikoUIElement{
     constructor(){
         super("code", "CodeInput")
         this.editor = new EditorView({
+            doc:'Flex(\n  p("1"),\n  p("2")\n)',
             extensions: [
                 basicSetup, 
                 javascript(),
@@ -74,6 +75,21 @@ class ZikoCMCodeInput extends ZikoUIElement{
             show:()=>GUTTERS_CONTAINER.style.display = "flex",
             hide:()=>GUTTERS_CONTAINER.style.display = "none",
         }
+    }
+    setCode(code=null){
+        if(code!==null){
+            // this.cache.nodes.content.innerText=code;
+            Object.assign(this.cache.nodes.content,{
+                textContent : code
+            })
+        }
+        return this
+    }
+    clear(){
+        Object.assign(this.cache.nodes.content,{
+            textContent : ""
+        })
+        return this;
     }
 }
 

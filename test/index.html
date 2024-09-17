@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+      <meta name="viewport" content="width=device-width, user-scalable=no" />
         <style>
             body{
                 overflow:hidden;
@@ -13,7 +14,14 @@
   <script src="../dist/ziko-cm.js"></script>
   <script>
     __Ziko__.ExtractAll();
-    c1=ZikoCM.CodeCell();
+    // c1=ZikoCM.CodeCell();
+    a=ZikoCM.CodeNote().style({
+      width : "95vw",
+      margin : "20px auto"
+    }).style({
+      border : "1px blue solid"
+    })
+    a.addNote().addNote()
     // c3=ZikoCM.hSplittedCodeCell()
     // c4=ZikoCM.vSplittedCodeCell()
     // T1=h4("Horizontal Input/Output").style({margin : "10px 10px"})

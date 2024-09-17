@@ -1,6 +1,5 @@
 import { 
     ZikoUIElement,
-    text
  } from "ziko";
 
 class ZikoCMCodeOutput extends ZikoUIElement{
@@ -41,40 +40,38 @@ class ZikoCMCodeOutput extends ZikoUIElement{
         })
         return this;
     }
-    #evaluateJs(code, order){
+    #evaluateJs(code){
         try{
-            // this.LeftControl[0].setValue("pending");
+            this.emit("run:pending");
             this.cache.state="pending";  
-            // globalThis.eval(this.Input.element.innerText);
             globalThis?.eval(code);
-
         }
         catch(err){
             console.log(err)
-            text(`Error : ${err.message}`).style({
-                color:"red",
-                background:"gold",
-                border:"2px red solid",
-                padding:"10px",
-                margin:"10px 0",
-                display:"flex",
-                justifyContent: "center",
+            this.emit("run:error",{
+                error : err
             });
-            // this.LeftControl[0].setValue("Err");
-            this.cache.state="Error";            
+            this.cache.state="error";            
         }
         finally{
             if(this.cache.state==="pending"){
                 this.cache.state="success";
-                // this.setOrder(order);
-                // if(this.cache.parent instanceof ZikoUICodeNote){
-                //     this.cache.parent.incrementOrder();
-                //     this.cache.parent.next();
-                // }
+                this.emit("run:success");
             }
         }
     }
-
+    onPending(callback){
+        this.on("run:pending",callback);
+        return this;
+    }
+    onError(callback){
+        this.on("run:error",callback);
+        return this;
+    }
+    onSuccess(callback){
+        this.on("run:success",callback);
+        return this;
+    }
 }
 
 

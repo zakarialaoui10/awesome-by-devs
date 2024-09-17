@@ -40,7 +40,6 @@
     "@codemirror/commands": "^6.6.1",
     "@codemirror/lang-javascript": "^6.2.2",
     "@codemirror/view": "^6.33.0",
-    "codemirror": "^6.0.1",
-    "ziko": "^0.0.13"
+    "codemirror": "^6.0.1"
   }
 }
