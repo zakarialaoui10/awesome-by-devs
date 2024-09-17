@@ -5,9 +5,9 @@ import {
 import { CodeInput } from "./code-input.js";
 import { CodeOutput } from "./code-output.js";
 class ZikoCMCodeCell extends ZikoUIElement{
-    constructor(){
+    constructor(code){
         super("section", "CodeCell");
-        this.input = CodeInput().size("100%");
+        this.input = CodeInput(code).size("100%");
         this.output = CodeOutput().size("100%");
         this.input.attach(this.output)
         this.input.onKeyDown(e=>{
@@ -52,7 +52,7 @@ class ZikoCMCodeCell extends ZikoUIElement{
     }
 }
 
-const CodeCell = () => new ZikoCMCodeCell();
+const CodeCell = (code) => new ZikoCMCodeCell(code);
 
 export{
     CodeCell,

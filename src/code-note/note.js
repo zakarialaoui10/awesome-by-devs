@@ -2,7 +2,7 @@ import { ZikoUIElement } from "ziko";
 import { CodeCell } from "../code-cell/code-cell.js";
 
 class ZikoCMNote extends ZikoUIElement{
-    constructor(){
+    constructor(code){
         super("section", "")
         this.order = text("78768").style({
             borderBottom : "4px solid gold",
@@ -16,7 +16,7 @@ class ZikoCMNote extends ZikoUIElement{
             width : "80px",
             height: "60px"
         }).vertical(0,0);
-        this.cell = CodeCell().size("100%").style({border:"1px red solid"})
+        this.cell = CodeCell(code).size("100%").style({border:"1px red solid"})
         this.note = Flex(
             left,
             this.cell
@@ -47,7 +47,7 @@ class ZikoCMNote extends ZikoUIElement{
     }
 }
 
-const Note = () => new ZikoCMNote()
+const Note = (code) => new ZikoCMNote(code)
 export{
     Note
 }

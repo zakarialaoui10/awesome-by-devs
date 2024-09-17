@@ -25,8 +25,8 @@ class ZikoCMCodeNote extends ZikoUIElement {
     get currentIndex(){
         return this.notes.findIndex(n=>n===this.activeNote);
     }
-    addNote(){
-        let NewNote = Note().size("100%").setOrder("___");
+    addNote(code){
+        let NewNote = Note(code).size("100%").setOrder("___");
         NewNote.cell.output.onSuccess(()=>{
             NewNote.setOrder(++this.cache.order);
             if(this.cache.nextCellAfterERunning==="next")this.next(this.cache.runNextCell);
@@ -85,6 +85,20 @@ class ZikoCMCodeNote extends ZikoUIElement {
             html : n.cell.output.element.innerHTML,
             order : n.order.text
         }))   
+    }
+    load(data=[], override = true){
+        if(override){
+            for(let i=0;i<this.notes.length;i++){
+                this.notes[i].cell.setCode(data[i])
+            }
+            for(let i=this.notes.length;i<data.length;i++){
+                this.addNote(data[i])
+            }
+        }
+        else data.forEach(
+            n=>this.addNote(n)
+        );
+        return this;
     }
 }
     

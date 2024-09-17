@@ -4,10 +4,10 @@ import {javascript} from "@codemirror/lang-javascript"
 import {keymap} from "@codemirror/view"
 import {indentWithTab} from "@codemirror/commands"
 class ZikoCMCodeInput extends ZikoUIElement{
-    constructor(){
+    constructor(code=""){
         super("code", "CodeInput")
         this.editor = new EditorView({
-            doc:'Flex(\n  p("1"),\n  p("2")\n)',
+            doc:code,
             extensions: [
                 basicSetup, 
                 javascript(),
@@ -93,7 +93,7 @@ class ZikoCMCodeInput extends ZikoUIElement{
     }
 }
 
-const CodeInput = () => new ZikoCMCodeInput()
+const CodeInput = (code) => new ZikoCMCodeInput(code)
 export{
     CodeInput,
     ZikoCMCodeInput

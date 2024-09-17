@@ -2,7 +2,7 @@
 /*
   Project: ziko-cm
   Author: Zakaria Elalaoui
-  Date : Tue Sep 17 2024 13:32:12 GMT+0100 (UTC+01:00)
+  Date : Tue Sep 17 2024 17:22:29 GMT+0100 (UTC+01:00)
   Git-Repo : https://github.com/zakarialaoui10/ziko-cm
   Git-Wiki : https://github.com/zakarialaoui10/ziko.cm/wiki
   Released under MIT License
@@ -27113,10 +27113,10 @@ const autoCloseTags = /*@__PURE__*/EditorView.inputHandler.of((view, from, to, t
 });
 
 class ZikoCMCodeInput extends ZikoUIElement{
-    constructor(){
+    constructor(code=""){
         super("code", "CodeInput");
         this.editor = new EditorView({
-            doc:'Flex(\n  p("1"),\n  p("2")\n)',
+            doc:code,
             extensions: [
                 basicSetup, 
                 javascript(),
@@ -27202,7 +27202,7 @@ class ZikoCMCodeInput extends ZikoUIElement{
     }
 }
 
-const CodeInput = () => new ZikoCMCodeInput();
+const CodeInput = (code) => new ZikoCMCodeInput(code);
 
 class ZikoCMCodeOutput extends ZikoUIElement{
     constructor(){
@@ -27280,9 +27280,9 @@ class ZikoCMCodeOutput extends ZikoUIElement{
 const CodeOutput = () => new ZikoCMCodeOutput();
 
 class ZikoCMCodeCell extends ZikoUIElement{
-    constructor(){
+    constructor(code){
         super("section", "CodeCell");
-        this.input = CodeInput().size("100%");
+        this.input = CodeInput(code).size("100%");
         this.output = CodeOutput().size("100%");
         this.input.attach(this.output);
         this.input.onKeyDown(e=>{
@@ -27327,10 +27327,10 @@ class ZikoCMCodeCell extends ZikoUIElement{
     }
 }
 
-const CodeCell = () => new ZikoCMCodeCell();
+const CodeCell = (code) => new ZikoCMCodeCell(code);
 
 class ZikoCMNote extends ZikoUIElement{
-    constructor(){
+    constructor(code){
         super("section", "");
         this.order = text("78768").style({
             borderBottom : "4px solid gold",
@@ -27344,7 +27344,7 @@ class ZikoCMNote extends ZikoUIElement{
             width : "80px",
             height: "60px"
         }).vertical(0,0);
-        this.cell = CodeCell().size("100%").style({border:"1px red solid"});
+        this.cell = CodeCell(code).size("100%").style({border:"1px red solid"});
         this.note = Flex(
             left,
             this.cell
@@ -27375,7 +27375,7 @@ class ZikoCMNote extends ZikoUIElement{
     }
 }
 
-const Note = () => new ZikoCMNote();
+const Note = (code) => new ZikoCMNote(code);
 
 class ZikoCMCodeNote extends ZikoUIElement {
     constructor(){
@@ -27401,8 +27401,8 @@ class ZikoCMCodeNote extends ZikoUIElement {
     get currentIndex(){
         return this.notes.findIndex(n=>n===this.activeNote);
     }
-    addNote(){
-        let NewNote = Note().size("100%").setOrder("___");
+    addNote(code){
+        let NewNote = Note(code).size("100%").setOrder("___");
         NewNote.cell.output.onSuccess(()=>{
             NewNote.setOrder(++this.cache.order);
             if(this.cache.nextCellAfterERunning==="next")this.next(this.cache.runNextCell);
@@ -27461,6 +27461,20 @@ class ZikoCMCodeNote extends ZikoUIElement {
             html : n.cell.output.element.innerHTML,
             order : n.order.text
         }))   
+    }
+    load(data=[], override = true){
+        if(override){
+            for(let i=0;i<this.notes.length;i++){
+                this.notes[i].cell.setCode(data[i]);
+            }
+            for(let i=this.notes.length;i<data.length;i++){
+                this.addNote(data[i]);
+            }
+        }
+        else data.forEach(
+            n=>this.addNote(n)
+        );
+        return this;
     }
 }
     
