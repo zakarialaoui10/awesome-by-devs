@@ -3,7 +3,7 @@
 
 > A curated list of code and content created by developers, showcasing projects, tools, libraries, and other contributions categorized by author.
 
-# Contents
+## Contents
 
 - [Zakaria Elalaoui](#zakaria-elalaoui)
 
