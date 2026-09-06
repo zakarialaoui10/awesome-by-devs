@@ -8,7 +8,7 @@
   Released under MIT License
 */
 
-import { ZikoUIElement, Flex as Flex$1 } from 'ziko';
+import { UIElements Flex$1 } from 'ziko';
 
 /**
 The data structure for documents. @nonabstract
@@ -27112,7 +27112,7 @@ const autoCloseTags = /*@__PURE__*/EditorView.inputHandler.of((view, from, to, t
     return true;
 });
 
-class ZikoCMCodeInput extends ZikoUIElement{
+class ZikoCMCodeInput extends UIElement
     constructor(code=""){
         super("code", "CodeInput");
         this.editor = new EditorView({
@@ -27204,7 +27204,7 @@ class ZikoCMCodeInput extends ZikoUIElement{
 
 const CodeInput = (code) => new ZikoCMCodeInput(code);
 
-class ZikoCMCodeOutput extends ZikoUIElement{
+class ZikoCMCodeOutput extends UIElement
     constructor(){
         super("output", "CodeOutput");
         Object.assign(this.cache,{
@@ -27279,7 +27279,7 @@ class ZikoCMCodeOutput extends ZikoUIElement{
 
 const CodeOutput = () => new ZikoCMCodeOutput();
 
-class ZikoCMCodeCell extends ZikoUIElement{
+class ZikoCMCodeCell extends UIElement
     constructor(code){
         super("section", "CodeCell");
         this.input = CodeInput(code).size("100%");
@@ -27329,7 +27329,7 @@ class ZikoCMCodeCell extends ZikoUIElement{
 
 const CodeCell = (code) => new ZikoCMCodeCell(code);
 
-class ZikoCMNote extends ZikoUIElement{
+class ZikoCMNote extends UIElement
     constructor(code){
         super("section", "");
         this.order = text("78768").style({
@@ -27377,7 +27377,7 @@ class ZikoCMNote extends ZikoUIElement{
 
 const Note = (code) => new ZikoCMNote(code);
 
-class ZikoCMCodeNote extends ZikoUIElement {
+class ZikoCMCodeNote extends UIElement
     constructor(){
         super("section","CodeNote");
         this.container = Flex$1().vertical(0, 0).style({

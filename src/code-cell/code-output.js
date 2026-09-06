@@ -1,8 +1,8 @@
 import { 
-    ZikoUIElement,
+    UIElement,
  } from "ziko";
 
-class ZikoCMCodeOutput extends ZikoUIElement{
+class ZikoCMCodeOutput extends UIElement{
     constructor(){
         super("output", "CodeOutput");
         Object.assign(this.cache,{

@@ -27116,7 +27116,7 @@
        return true;
    });
 
-   class ZikoCMCodeInput extends ziko.ZikoUIElement{
+   class ZikoCMCodeInput extends ziko.ement{
        constructor(code=""){
            super("code", "CodeInput");
            this.editor = new EditorView({
@@ -27208,7 +27208,7 @@
 
    const CodeInput = (code) => new ZikoCMCodeInput(code);
 
-   class ZikoCMCodeOutput extends ziko.ZikoUIElement{
+   class ZikoCMCodeOutput extends ziko.ement{
        constructor(){
            super("output", "CodeOutput");
            Object.assign(this.cache,{
@@ -27283,7 +27283,7 @@
 
    const CodeOutput = () => new ZikoCMCodeOutput();
 
-   class ZikoCMCodeCell extends ziko.ZikoUIElement{
+   class ZikoCMCodeCell extends ziko.ement{
        constructor(code){
            super("section", "CodeCell");
            this.input = CodeInput(code).size("100%");
@@ -27333,7 +27333,7 @@
 
    const CodeCell = (code) => new ZikoCMCodeCell(code);
 
-   class ZikoCMNote extends ziko.ZikoUIElement{
+   class ZikoCMNote extends ziko.ement{
        constructor(code){
            super("section", "");
            this.order = text("78768").style({
@@ -27381,7 +27381,7 @@
 
    const Note = (code) => new ZikoCMNote(code);
 
-   class ZikoCMCodeNote extends ziko.ZikoUIElement {
+   class ZikoCMCodeNote extends ziko.ement {
        constructor(){
            super("section","CodeNote");
            this.container = ziko.Flex().vertical(0, 0).style({

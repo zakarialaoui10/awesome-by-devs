@@ -1,10 +1,10 @@
 import { 
-    ZikoUIElement,
+    UIElement,
     Flex,
 } from "ziko";
 import { CodeInput } from "./code-input.js";
 import { CodeOutput } from "./code-output.js";
-class ZikoCMCodeCell extends ZikoUIElement{
+class ZikoCMCodeCell extends UIElement{
     constructor(code){
         super("section", "CodeCell");
         this.input = CodeInput(code).size("100%");

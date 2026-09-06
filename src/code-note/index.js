@@ -1,7 +1,7 @@
-import { ZikoUIElement,Flex } from "ziko";
+import { UIElement,Flex } from "ziko";
 import { Note } from "./note.js";
 
-class ZikoCMCodeNote extends ZikoUIElement {
+class ZikoCMCodeNote extends UIElement {
     constructor(){
         super("section","CodeNote");
         this.container = Flex().vertical(0, 0).style({

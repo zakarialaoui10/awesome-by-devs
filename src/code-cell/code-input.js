@@ -1,9 +1,9 @@
-import {ZikoUIElement} from "ziko";
+import {UIElement} from "ziko";
 import {EditorView, basicSetup} from "codemirror"
 import {javascript} from "@codemirror/lang-javascript"
 import {keymap} from "@codemirror/view"
 import {indentWithTab} from "@codemirror/commands"
-class ZikoCMCodeInput extends ZikoUIElement{
+class ZikoCMCodeInput extends UIElement{
     constructor(code=""){
         super("code", "CodeInput")
         this.editor = new EditorView({

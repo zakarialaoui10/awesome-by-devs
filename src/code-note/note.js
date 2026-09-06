@@ -1,7 +1,7 @@
-import { ZikoUIElement } from "ziko";
+import { UIElement } from "ziko";
 import { CodeCell } from "../code-cell/code-cell.js";
 
-class ZikoCMNote extends ZikoUIElement{
+class ZikoCMNote extends UIElement{
     constructor(code){
         super("section", "")
         this.order = text("78768").style({
